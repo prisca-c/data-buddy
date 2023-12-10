@@ -1,15 +1,30 @@
 {
   "name": "data-buddy",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.1",
+  "description": "Data Buddy helps you to store and retrieve data from local json files",
+  "main": "build/index.js",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "del-cli build",
+    "lint": "eslint . --ext=.ts",
+    "build": "npm run clean && tsc"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "prisca-c",
+  "license": "MIT",
   "devDependencies": {
+    "@adonisjs/eslint-config": "^1.1.9",
+    "@adonisjs/prettier-config": "^1.1.9",
+    "@types/node": "^20.9.4",
+    "del-cli": "^5.1.0",
+    "jest": "^29.7.0",
     "typescript": "^5.3.3"
-  }
+  },
+  "eslintConfig": {
+    "extends": "@adonisjs/eslint-config/package"
+  },
+  "prettier": "@adonisjs/prettier-config"
 }
