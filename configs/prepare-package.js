@@ -4,18 +4,23 @@ import path from 'path'
 const buildDir = './dist'
 function createEsmModulePackageJson() {
   const packageJson = {
+    name: 'data-buddy',
+    version: '0.0.1',
     type: 'module',
     main: './index.js',
     module: './index.js',
     types: 'index.d.ts',
     typesVersions: {
       '*': {
-        base: ['types/data_buddy.d.ts'],
+        'data-buddy': ['types/data_buddy.d.ts'],
       },
     },
     exports: {
       '.': './index.js',
-      './data-buddy': './data_buddy.js',
+      './data-buddy': {
+        import: './data_buddy.js',
+        types: './types/data_buddy.d.ts',
+      },
     },
   }
 

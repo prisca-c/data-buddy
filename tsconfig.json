@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "allowJs": true,
     "rootDir": "./src",
     "moduleResolution": "node",
     "baseUrl": "./src",
@@ -10,9 +9,11 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "strictFunctionTypes": true,
     "declaration": true,
+    "alwaysStrict": true,
     "importHelpers": true,
     "declarationDir": "./dist/types"
   },
-  "include": ["./src"],
+  "include": ["./src"]
 }
