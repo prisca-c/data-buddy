@@ -2,47 +2,30 @@
   "name": "data-buddy",
   "version": "0.0.1",
   "description": "Data Buddy helps you to store and retrieve data from local json files",
-  "main": "./lib/cjs/index.js",
-  "types": "./lib/cjs/types/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "type": "module",
   "engines": {
     "node": ">=18.0.0"
   },
   "scripts": {
-    "clean": "del-cli build",
+    "clean": "del-cli dist",
     "lint": "eslint . --ext=.ts",
-    "build": "npm run clean && npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc -p ./configs/tsconfig.esm.json && shx mv lib/esm/index.js lib/esm/index.mjs",
-    "build:cjs": "tsc -p ./configs/tsconfig.cjs.json",
-    "prepack": "npm run build"
+    "build": "pnpm run clean && pnpm run compile && pnpm run script",
+    "compile": "tsc -b tsconfig.json",
+    "script": "node configs/prepare-package.js"
   },
   "keywords": [],
   "author": "prisca-c",
   "license": "MIT",
   "files": [
-    "lib/**/*",
-    "build/src",
-    "build/index.js"
+    "dist/"
   ],
   "exports": {
-    ".": {
-      "import": {
-        "types": "./lib/esm/types/index.d.ts",
-        "default": "./lib/esm/index.mjs"
-      },
-      "require": {
-        "types": "./lib/cjs/types/index.d.ts",
-        "default": "./lib/cjs/index.js"
-      }
-    },
-    "./store": {
-      "import": {
-        "types": "./lib/esm/types/store.d.ts",
-        "default": "./lib/esm/store.mjs"
-      },
-      "require": {
-        "types": "./lib/cjs/types/store.d.ts",
-        "default": "./lib/cjs/store.js"
-      }
+    "./data-buddy": {
+      "types": "./dist/types/*.d.ts",
+      "import": "./dist/*.js"
     }
   },
   "devDependencies": {

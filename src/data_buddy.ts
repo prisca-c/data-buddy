@@ -1,59 +1,110 @@
-import * as fs from 'node:fs/promises'
+import * as fs from 'fs/promises'
 
-interface IData {
-  read(path: string, filename: string): Promise<Object | null>
-  create(path: string, filename: string, data: any): Promise<any>
-  update(path: string, filename: string, data: any): Promise<any>
+type ReturnData = Object | null
+
+/**
+ * Interface for the DataBuddy class.
+ * @interface
+ */
+export interface IDataBuddy {
+  /**
+   * Reads a file and returns its content.
+   * @param {string} path - The path to the file.
+   * @param {string} filename - The name of the file.
+   * @returns {Promise<ReturnData>} The content of the file or null if the file does not exist.
+   */
+  read(path: string, filename: string): Promise<ReturnData>
+
+  /**
+   * Creates a new file with the given data.
+   * @param {string} path - The path to the file.
+   * @param {string} filename - The name of the file.
+   * @param {any} data - The data to write to the file.
+   * @returns {Promise<ReturnData>} The content of the new file or an error if the file already exists.
+   */
+  create(path: string, filename: string, data: any): Promise<ReturnData>
+
+  /**
+   * Updates an existing file with the given data.
+   * @param {string} path - The path to the file.
+   * @param {string} filename - The name of the file.
+   * @param {any} data - The data to write to the file.
+   * @returns {Promise<ReturnData>} The content of the updated file or an error if the file does not exist.
+   */
+  update(path: string, filename: string, data: any): Promise<ReturnData>
+
+  /**
+   * Deletes a file.
+   * @param {string} path - The path to the file.
+   * @param {string} filename - The name of the file.
+   * @returns {Promise<boolean>} True if the file was deleted successfully, or an error if the file does not exist.
+   */
+  delete(path: string, filename: string): Promise<boolean>
 }
 
-export class DataBuddy implements IData {
-  async read(path: string, filename: string): Promise<Object | null> {
-    const fileData = `${path}/${filename}.json`
+/**
+ * Class implementing the IDataBuddy interface.
+ * @class
+ */
+class DataBuddy implements IDataBuddy {
+  /**
+   * Reads a file and returns its content.
+   * @param {string} path - The path to the file.
+   * @param {string} filename - The name of the file.
+   * @returns {Promise<ReturnData>} The content of the file or null if the file does not exist.
+   */
+  async read(path: string, filename: string): Promise<ReturnData> {
     try {
-      const data = await fs.readFile(fileData, 'utf-8')
+      const data = await fs.readFile(`${path}/${filename}.json`, 'utf-8')
       return JSON.parse(data)
     } catch (error) {
       return null
     }
   }
 
-  async create(path: string, filename: string, data: any): Promise<any> {
-    const fileData = `${path}/${filename}.json`
-
-    const fileExists = await this.read(path, filename)
-    if (fileExists) {
-      throw new Error(`File "${filename}" already exists in "${path}"`)
-    } else {
-      try {
-        const newData = JSON.stringify(data)
-        await fs.writeFile(fileData, newData)
-        return this.read(path, filename)
-      } catch (error: any) {
-        throw new Error(error)
-      }
+  /**
+   * Creates a new file with the given data.
+   * @param {string} path - The path to the file.
+   * @param {string} filename - The name of the file.
+   * @param {any} data - The data to write to the file.
+   * @returns {Promise<ReturnData>} The content of the new file or an error if the file already exists.
+   */
+  async create(path: string, filename: string, data: any): Promise<ReturnData> {
+    if (await this.read(path, filename)) {
+      throw new Error(`File ${filename} already exists in ${path}`)
     }
+    await fs.writeFile(`${path}/${filename}.json`, JSON.stringify(data))
+    return this.read(path, filename)
   }
 
-  async update(
-    path: string,
-    filename: string,
-    data: any
-  ): Promise<{
-    [key: string]: any
-  } | null> {
-    const fileData = `${path}/${filename}.json`
-
-    const fileExists = await this.read(path, filename)
-    if (!fileExists) {
-      throw new Error(`File "${filename}" does not exist in "${path}"`)
+  /**
+   * Updates an existing file with the given data.
+   * @param {string} path - The path to the file.
+   * @param {string} filename - The name of the file.
+   * @param {any} data - The data to write to the file.
+   * @returns {Promise<ReturnData>} The content of the updated file or an error if the file does not exist.
+   */
+  async update(path: string, filename: string, data: any): Promise<ReturnData> {
+    if (!(await this.read(path, filename))) {
+      throw new Error(`File ${filename} does not exist in ${path}`)
     }
+    await fs.writeFile(`${path}/${filename}.json`, JSON.stringify(data))
+    return this.read(path, filename)
+  }
 
-    try {
-      const newData = JSON.stringify(data)
-      await fs.writeFile(fileData, newData)
-      return this.read(path, filename)
-    } catch (error: any) {
-      throw new Error(error)
+  /**
+   * Deletes a file.
+   * @param {string} path - The path to the file.
+   * @param {string} filename - The name of the file.
+   * @returns {Promise<boolean>} True if the file was deleted successfully, or an error if the file does not exist.
+   */
+  async delete(path: string, filename: string): Promise<boolean> {
+    if (!(await this.read(path, filename))) {
+      throw new Error(`File ${filename} does not exist in ${path}`)
     }
+    await fs.unlink(`${path}/${filename}.json`)
+    return true
   }
 }
+
+export { DataBuddy }
