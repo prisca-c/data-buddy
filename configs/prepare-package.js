@@ -13,6 +13,7 @@ function createEsmModulePackageJson() {
     typesVersions: {
       '*': {
         'data-buddy': ['types/data_buddy.d.ts'],
+        'data-buddy/utils': ['types/data_buddy_utils.d.ts'],
       },
     },
     exports: {
@@ -20,6 +21,10 @@ function createEsmModulePackageJson() {
       './data-buddy': {
         import: './data_buddy.js',
         types: './types/data_buddy.d.ts',
+      },
+      './data-buddy/utils': {
+        import: './data_buddy_utils.js',
+        types: './types/data_buddy_utils.d.ts',
       },
     },
   }

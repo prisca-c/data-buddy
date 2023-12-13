@@ -1,4 +1,5 @@
 import * as fs from 'fs/promises'
+import { DataBuddyUtils } from './data_buddy_utils.js'
 
 type ReturnData = Object | null
 
@@ -28,7 +29,7 @@ export interface IDataBuddy {
    * Updates an existing file with the given data.
    * @param {string} path - The path to the file.
    * @param {string} filename - The name of the file.
-   * @param {any} data - The data to write to the file.
+   * @param {object} data - The data to write to the file.
    * @returns {Promise<ReturnData>} The content of the updated file or an error if the file does not exist.
    */
   update(path: string, filename: string, data: object): Promise<ReturnData>
@@ -46,9 +47,10 @@ export interface IDataBuddy {
  * Class implementing the IDataBuddy interface.
  * @class
  */
-class DataBuddy implements IDataBuddy {
+class DataBuddy extends DataBuddyUtils implements IDataBuddy {
   async read(path: string, filename: string): Promise<ReturnData> {
     try {
+      this.validatePathAndFilename(path, filename)
       const data = await fs.readFile(`${path}/${filename}.json`, 'utf-8')
       return JSON.parse(data)
     } catch (error) {
@@ -57,22 +59,30 @@ class DataBuddy implements IDataBuddy {
   }
 
   async create(path: string, filename: string, data: object): Promise<ReturnData> {
+    this.validatePathAndFilename(path, filename)
+    const sanitizedData = this.sanitizeData(data)
+
     if (await this.read(path, filename)) {
       throw new Error(`File ${filename} already exists in ${path}`)
     }
-    await fs.writeFile(`${path}/${filename}.json`, JSON.stringify(data))
+    await fs.writeFile(`${path}/${filename}.json`, JSON.stringify(sanitizedData))
     return this.read(path, filename)
   }
 
   async update(path: string, filename: string, data: object): Promise<ReturnData> {
+    this.validatePathAndFilename(path, filename)
+    const sanitizedData = this.sanitizeData(data)
+
     if (!(await this.read(path, filename))) {
       throw new Error(`File ${filename} does not exist in ${path}`)
     }
-    await fs.writeFile(`${path}/${filename}.json`, JSON.stringify(data))
+    await fs.writeFile(`${path}/${filename}.json`, JSON.stringify(sanitizedData))
     return this.read(path, filename)
   }
 
   async delete(path: string, filename: string): Promise<boolean> {
+    this.validatePathAndFilename(path, filename)
+
     if (!(await this.read(path, filename))) {
       throw new Error(`File ${filename} does not exist in ${path}`)
     }
