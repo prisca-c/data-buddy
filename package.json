@@ -12,7 +12,7 @@
   "scripts": {
     "clean": "del-cli dist",
     "lint": "eslint . --ext=.ts",
-    "build": "pnpm run clean && pnpm run compile && pnpm run script",
+    "build": "pnpm run clean && pnpm run compile",
     "compile": "tsc -b tsconfig.json",
     "script": "node configs/prepare-package.js"
   },
@@ -24,8 +24,12 @@
   ],
   "exports": {
     "./data-buddy": {
-      "types": "./dist/types/*.d.ts",
-      "import": "./dist/*.js"
+      "import": "./dist/data_buddy.js",
+      "types": "./dist/types/data_buddy.d.ts"
+    },
+    "./data-buddy-utils": {
+      "import": "./dist/data_buddy_utils.js",
+      "types": "./dist/types/data_buddy_utils.d.ts"
     }
   },
   "devDependencies": {
@@ -35,6 +39,7 @@
     "del-cli": "^5.1.0",
     "jest": "^29.7.0",
     "shx": "^0.3.4",
+    "tslib": "^2.6.2",
     "typescript": "^5.3.3"
   },
   "eslintConfig": {

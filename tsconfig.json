@@ -1,19 +1,22 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "rootDir": "./src",
+    "target": "es5",
+    "lib": ["es6", "dom"],
+    "module": "commonjs",
     "moduleResolution": "node",
-    "baseUrl": "./src",
+    "rootDir": "./src",
     "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
     "strict": true,
     "strictFunctionTypes": true,
-    "declaration": true,
     "alwaysStrict": true,
     "importHelpers": true,
-    "declarationDir": "./dist/types"
+    "sourceMap": true,
+    "declaration": true,
+    "declarationDir": "./dist/types",
+    "types": ["@types/node"]
   },
-  "include": ["./src"]
+  "include": ["src/**/*"]
 }

@@ -1,4 +1,4 @@
-import * as fs from 'fs/promises'
+import * as fs from 'node:fs/promises'
 import { DataBuddyUtils } from './data_buddy_utils.js'
 
 type ReturnData = Object | null
