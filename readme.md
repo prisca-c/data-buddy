@@ -1,3 +1,5 @@
+# Data Buddy - The simple & lazy way to store data
+
 Simple package to help you store and retrieve data from a json file 
 in a simple way.
 
@@ -47,8 +49,13 @@ code to store and retrieve data from a json file.
 ### Why not use data-buddy?
 If you want to store a lot of data, it's better to use a database.
 
+### Are contributions welcome?
+Yes, since this package has been made from a personal need to learn
+how to publish a package on npm, I'm open to any contributions to improve it !
+
 ### How to contribute?
-You can contribute by creating a pull request or an issue.
+You can simply open an issue or a pull request. 
+(No template for now but if you want to add one, feel free to share it !)
 
 ### License
 MIT
