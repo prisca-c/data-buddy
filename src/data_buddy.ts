@@ -47,7 +47,7 @@ export interface IDataBuddy {
  * Class implementing the IDataBuddy interface.
  * @class
  */
-class DataBuddy extends DataBuddyUtils implements IDataBuddy {
+export class DataBuddy extends DataBuddyUtils implements IDataBuddy {
   async read(path: string, filename: string): Promise<ReturnData> {
     try {
       this.validatePathAndFilename(path, filename)
@@ -90,5 +90,3 @@ class DataBuddy extends DataBuddyUtils implements IDataBuddy {
     return true
   }
 }
-
-export { DataBuddy }
