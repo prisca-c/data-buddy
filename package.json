@@ -43,6 +43,10 @@
     "extends": "@adonisjs/eslint-config/package"
   },
   "prettier": "@adonisjs/prettier-config",
+  "publishConfig": {
+    "access": "public",
+    "tag": "latest"
+  },
   "tsup": {
     "entry": [
       "./index.ts",
