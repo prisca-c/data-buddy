@@ -5,7 +5,7 @@ import type {
   BaseParams,
   ReturnData,
   UpsertParams,
-} from './types/DataBuddyInterface.js'
+} from './types/data_buddy_interface.js'
 
 /**
  * Class implementing the IDataBuddy interface.
