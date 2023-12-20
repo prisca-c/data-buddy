@@ -2,12 +2,12 @@ import { DataBuddy } from '../src/data_buddy.js'
 import { test } from '@japa/runner'
 import * as fs from 'node:fs/promises'
 
-test.group('DataBuddy', (group) => {
-  const dataBuddy = new DataBuddy()
-  const path = 'tests/tmp'
-  const filename = 'test'
-  const data = { test: 'test' }
+const dataBuddy = new DataBuddy('tests')
+const path = 'tmp'
+const filename = 'test'
+const data = { test: 'test' }
 
+test.group('DataBuddy', (group) => {
   group.each.setup(async () => {
     await fs.mkdir('tests/tmp')
   })
@@ -16,18 +16,18 @@ test.group('DataBuddy', (group) => {
     await fs.rm('tests/tmp', { recursive: true, force: true })
   })
 
-  test('read', async ({ assert }) => {
+  test('read() should read data from a file', async ({ assert }) => {
     await dataBuddy.create({ path, filename, data })
     const fileData = await dataBuddy.read({ path, filename })
     assert.deepEqual(fileData, data)
   })
 
-  test('create', async ({ assert }) => {
+  test('create() should create a new file with the provided data', async ({ assert }) => {
     const fileData = await dataBuddy.create({ path, filename, data })
     assert.deepEqual(fileData, data)
   })
 
-  test('update', async ({ assert }) => {
+  test('update() should update the data in an existing file', async ({ assert }) => {
     const fileBase = await dataBuddy.create({ path, filename, data })
     const newData = { test: 'new test' }
     const fileData = await dataBuddy.update({ path, filename, data: newData })
@@ -35,7 +35,7 @@ test.group('DataBuddy', (group) => {
     assert.deepEqual(fileData, newData)
   })
 
-  test('delete', async ({ assert }) => {
+  test('delete() should delete a file', async ({ assert }) => {
     await dataBuddy.create({ path, filename, data })
     const fileData = await dataBuddy.delete({ path, filename })
     assert.isTrue(fileData)
