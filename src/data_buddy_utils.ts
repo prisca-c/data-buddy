@@ -1,4 +1,6 @@
 export class DataBuddyUtils {
+  protected basePath: string | null = null
+
   protected validatePathAndFilename(path: string, filename: string) {
     if (!this.isValidPath(path) || !this.isValidFilename(filename)) {
       throw new Error('Invalid path or filename')
@@ -48,5 +50,9 @@ export class DataBuddyUtils {
       }
     }
     return sanitizedData
+  }
+
+  protected workingPath(path: string): string {
+    return this.basePath ? `${this.basePath}/${path}` : `${path}`
   }
 }

@@ -12,45 +12,61 @@ import type {
  * @class
  */
 export class DataBuddy extends DataBuddyUtils implements DataBuddyInterface {
+  constructor(basePath?: string) {
+    super()
+    if (basePath) {
+      this.isValidPath(basePath)
+      this.basePath = basePath
+    }
+  }
+
   async read({ path, filename }: BaseParams): Promise<ReturnData> {
     try {
       this.validatePathAndFilename(path, filename)
-      const data = await fs.readFile(`${path}/${filename}.json`, 'utf-8')
+      const workingPath = this.workingPath(path)
+      const data = await fs.readFile(`${workingPath}/${filename}.json`, 'utf-8')
       return JSON.parse(data)
     } catch (error) {
-      return null
+      if (error.code === 'ENOENT') {
+        return null
+      } else {
+        throw error
+      }
     }
   }
 
   async create({ path, filename, data }: UpsertParams): Promise<ReturnData> {
     this.validatePathAndFilename(path, filename)
     const sanitizedData = this.sanitizeData(data)
+    const workingPath = this.workingPath(path)
 
     if (await this.read({ path, filename })) {
-      throw new Error(`File ${filename} already exists in ${path}`)
+      throw new Error(`File ${filename} already exists in ${workingPath}`)
     }
-    await fs.writeFile(`${path}/${filename}.json`, JSON.stringify(sanitizedData))
+    await fs.writeFile(`${workingPath}/${filename}.json`, JSON.stringify(sanitizedData))
     return this.read({ path, filename })
   }
 
   async update({ path, filename, data }: UpsertParams): Promise<ReturnData> {
     this.validatePathAndFilename(path, filename)
     const sanitizedData = this.sanitizeData(data)
+    const workingPath = this.workingPath(path)
 
     if (!(await this.read({ path, filename }))) {
-      throw new Error(`File ${filename} does not exist in ${path}`)
+      throw new Error(`File ${filename} does not exist in ${workingPath}`)
     }
-    await fs.writeFile(`${path}/${filename}.json`, JSON.stringify(sanitizedData))
+    await fs.writeFile(`${workingPath}/${filename}.json`, JSON.stringify(sanitizedData))
     return this.read({ path, filename })
   }
 
   async delete({ path, filename }: BaseParams): Promise<boolean> {
     this.validatePathAndFilename(path, filename)
+    const workingPath = this.workingPath(path)
 
     if (!(await this.read({ path, filename }))) {
-      throw new Error(`File ${filename} does not exist in ${path}`)
+      throw new Error(`File ${filename} does not exist in ${workingPath}`)
     }
-    await fs.unlink(`${path}/${filename}.json`)
+    await fs.unlink(`${workingPath}/${filename}.json`)
     return true
   }
 }
