@@ -1,8 +1,8 @@
-import { DataBuddy } from '../src/data_buddy.js'
+import { File } from '../src/file.js'
 import { test } from '@japa/runner'
 import * as fs from 'node:fs/promises'
 
-const dataBuddy = new DataBuddy('tests')
+const dataBuddy = new File('tests')
 const path = 'tmp'
 const filename = 'test'
 const data = { test: 'test' }

@@ -3,12 +3,12 @@ export type BaseParams = { path: string; filename: string }
 export type UpsertParams = BaseParams & { data: object }
 
 /**
- * `DataBuddyInterface` is an interface that defines the structure for the `DataBuddy` class.
+ * `FileInterface` is an interface that defines the structure for the `DataBuddy` class.
  * It includes methods for reading, creating, updating, and deleting data.
  *
  * @interface
  */
-export interface DataBuddyInterface {
+export interface FileInterface {
   /**
    * The `read` method is used to read data from a file.
    * It takes an object with `path` and `filename` properties as an argument.

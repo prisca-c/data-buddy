@@ -1,17 +1,12 @@
 import * as fs from 'node:fs/promises'
 import { DataBuddyUtils } from './data_buddy_utils.js'
-import type {
-  DataBuddyInterface,
-  BaseParams,
-  ReturnData,
-  UpsertParams,
-} from './types/data_buddy_interface.js'
+import type { FileInterface, BaseParams, ReturnData, UpsertParams } from './types/file_interface.js'
 
 /**
- * Class implementing the IDataBuddy interface.
+ * Class implementing the FileInterface interface.
  * @class
  */
-export class DataBuddy extends DataBuddyUtils implements DataBuddyInterface {
+export class File extends DataBuddyUtils implements FileInterface {
   constructor(basePath?: string) {
     super()
     if (basePath) {
@@ -43,7 +38,7 @@ export class DataBuddy extends DataBuddyUtils implements DataBuddyInterface {
     if (await this.read({ path, filename })) {
       throw new Error(`File ${filename} already exists in ${workingPath}`)
     }
-    await fs.writeFile(`${workingPath}/${filename}.json`, JSON.stringify(sanitizedData))
+    await fs.writeFile(`${workingPath}/${filename}.json`, JSON.stringify(sanitizedData, null, 4))
     return this.read({ path, filename })
   }
 
@@ -55,7 +50,7 @@ export class DataBuddy extends DataBuddyUtils implements DataBuddyInterface {
     if (!(await this.read({ path, filename }))) {
       throw new Error(`File ${filename} does not exist in ${workingPath}`)
     }
-    await fs.writeFile(`${workingPath}/${filename}.json`, JSON.stringify(sanitizedData))
+    await fs.writeFile(`${workingPath}/${filename}.json`, JSON.stringify(sanitizedData, null, 4))
     return this.read({ path, filename })
   }
 

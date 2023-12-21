@@ -1,1 +1,1 @@
-export { DataBuddy } from './src/data_buddy.js'
+export { File } from './src/file.js'
