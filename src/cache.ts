@@ -20,6 +20,10 @@ export class Cache implements CacheInterface {
     }
   }
 
+  has(key: string): boolean {
+    return this.cache.has(key)
+  }
+
   delete(key: string): boolean {
     return this.cache.delete(key)
   }
