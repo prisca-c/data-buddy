@@ -25,7 +25,9 @@
   ],
   "exports": {
     ".": "./dist/index.js",
-    "./main": "./dist/src/data_buddy.js"
+    "./init": "./dist/src/data_buddy.js",
+    "./cache": "./dist/src/cache.js",
+    "./file": "./dist/src/file.js"
   },
   "repository": {
     "type": "git",
@@ -60,7 +62,9 @@
     "entry": [
       "./index.ts",
       "./src/data_buddy.ts",
-      "./src/data_buddy_utils.ts"
+      "./src/data_buddy_utils.ts",
+      "./src/file.ts",
+      "./src/cache.ts"
     ],
     "outDir": "./dist",
     "clean": true,
