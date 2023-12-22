@@ -1,6 +1,6 @@
 {
   "name": "data-buddy",
-  "version": "0.0.3",
+  "version": "0.0.3-1",
   "description": "Data Buddy helps you to store and retrieve data from local json files",
   "type": "module",
   "engines": {
