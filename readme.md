@@ -13,38 +13,93 @@ yarn add data-buddy
 ```
 
 
-## Usage
+## Usage to handle json files
 ```js
-import { DataBuddy } from "data-buddy/data-buddy";
+import { File } from 'data-buddy/file';
 
-const store = new DataBuddy();
+const file = new File();
+//or if you want to specify a base path
+const file = new File("path/to");
 ```
 
 ### Create
 ```js
-store.create("data", "best_buddy", { name: "buddy" });
+file.create({ 
+  path: "data", //path to the file (if base path is specified, this will be added to it)
+  filename: "best_buddy", //name of the file
+  data: { name: "buddy" } //data to store
+});
 ```
 
 ### Read
 ```js
 
-store.read("data", "best_buddy");
+file.read({ 
+  path: "data", //path to the file
+  filename: "best_buddy" //name of the file
+});
 ```
 
 ### Update
 ```js
-store.update("data", "best_buddy", { name: "best" });
+file.update({ 
+  path: "data", //path to the file
+  filename: "best_buddy", //name of the file
+  data: { name: "buddy" } //data to store
+});
 ```
 
 ### Delete
 ```js
-store.delete("data", "best_buddy");
+file.delete({ 
+  path: "data", //path to the file
+  filename: "best_buddy" //name of the file
+});
+```
+
+## Usage to handle cache
+```js
+import { Cache } from 'data-buddy/cache';
+const cache = new Cache();
+```
+
+### Get key
+```js
+cache.get("key");
+```
+
+### Set key
+```js
+cache.set("key", "value");
+
+//cache with expiration time
+cache.set("key", "value", 1000); //time in ms
+```
+
+### Delete key
+```js
+cache.delete("key");
+```
+
+### Clear all cache
+```js
+cache.clear();
+```
+
+### Has key
+```js
+cache.has("key");
+```
+
+### All keys
+```js
+cache.all();
 ```
 
 ### Why use data-buddy?
 Because if you're here, it's probably 
 because you're lazy like me and don't want to write a lot of 
-code to store and retrieve data from a json file.
+code to store and retrieve data from a json file or caching data.
 
 ### Why not use data-buddy?
 If you want to store a lot of data, it's better to use a database.
