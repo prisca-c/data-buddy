@@ -1,10 +1,13 @@
-# Data Buddy - The simple & lazy way to store data
+# Data Buddy - Store, retrieve and cache data
+
+[![npm version](https://badge.fury.io/js/data-buddy.svg)](https://badge.fury.io/js/data-buddy)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Simple package to help you store and retrieve data from a json file 
-in a simple way.
+in a simple way. It also allows you to cache data.
 
 For the lazy people like me, who don't want to write a lot of code to store 
-and retrieve data from a json file.
+and retrieve data from a json file or caching data.
 
 ```bash
 npm install data-buddy
