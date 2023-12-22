@@ -1,5 +1,11 @@
 import { CacheInterface } from './types/cache_interface.js'
 
+/**
+ * Cache is a class that implements the CacheInterface interface.
+ * It uses a Map object to store key-value pairs.
+ * @class
+ * @implements {CacheInterface}
+ */
 export class Cache implements CacheInterface {
   protected cache: Map<string, object>
 
@@ -22,6 +28,11 @@ export class Cache implements CacheInterface {
 
   has(key: string): boolean {
     return this.cache.has(key)
+  }
+
+  all(): Array<[string, object]> {
+    const entries = this.cache.entries()
+    return [...entries]
   }
 
   delete(key: string): boolean {
