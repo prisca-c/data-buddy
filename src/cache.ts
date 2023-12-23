@@ -8,7 +8,7 @@ import { KeyValuePairInterface } from './types/key_value_pair_interface.js'
  * @implements {CacheInterface}
  */
 export class Cache implements CacheInterface {
-  protected cache: Map<string, { value: object; expiry: number }>
+  protected cache: Map<string, Omit<KeyValuePairInterface, 'key'>>
 
   constructor() {
     this.cache = new Map()
@@ -19,17 +19,16 @@ export class Cache implements CacheInterface {
     if (!entry) return undefined
 
     const now = Date.now()
-    if (now >= entry.expiry) {
-      console.log('Cache entry expired')
+    if (entry.expiry && now >= entry.expiry) {
       this.cache.delete(key)
       return undefined
     }
     return entry.value
   }
 
-  set(key: string, value: object, ttl?: number): void {
-    const expiry = ttl ? Date.now() + ttl : Number.POSITIVE_INFINITY
-    this.cache.set(key, { value, expiry })
+  set(pair: KeyValuePairInterface): void {
+    const expiry = pair.expiry ? Date.now() + pair.expiry : Number.POSITIVE_INFINITY
+    this.cache.set(pair.key, { value: pair.value, expiry })
   }
 
   async set(key: string, value: object, expiry?: number): Promise<void> {
@@ -45,7 +44,7 @@ export class Cache implements CacheInterface {
     const now = Date.now()
     return Array.from(this.cache.entries())
       .filter(([key, { expiry }]) => {
-        if (now >= expiry) {
+        if (expiry && now >= expiry) {
           this.cache.delete(key)
           return false
         }
