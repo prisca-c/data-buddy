@@ -8,22 +8,28 @@ import { KeyValuePairInterface } from './types/key_value_pair_interface.js'
  * @implements {CacheInterface}
  */
 export class Cache implements CacheInterface {
-  protected cache: Map<string, Omit<KeyValuePairInterface, 'key'>>
+  protected cache: Map<string, { value: object; expiry: number }>
 
   constructor() {
     this.cache = new Map()
   }
 
-  async get(key: string): Promise<object | undefined> {
+  get(key: string): object | undefined {
     const entry = this.cache.get(key)
     if (!entry) return undefined
 
     const now = Date.now()
-    if (entry.expiry && now >= entry.expiry) {
+    if (now >= entry.expiry) {
+      console.log('Cache entry expired')
       this.cache.delete(key)
       return undefined
     }
     return entry.value
+  }
+
+  set(key: string, value: object, ttl?: number): void {
+    const expiry = ttl ? Date.now() + ttl : Number.POSITIVE_INFINITY
+    this.cache.set(key, { value, expiry })
   }
 
   async set(key: string, value: object, expiry?: number): Promise<void> {
@@ -37,15 +43,15 @@ export class Cache implements CacheInterface {
 
   all(): Array<[string, object]> {
     const now = Date.now()
-    const result: Array<[string, object]> = []
-    for (const [key, { value, expiry }] of this.cache) {
-      if (expiry && now >= expiry) {
-        this.cache.delete(key)
-      } else {
-        result.push([key, value])
-      }
-    }
-    return result
+    return Array.from(this.cache.entries())
+      .filter(([key, { expiry }]) => {
+        if (now >= expiry) {
+          this.cache.delete(key)
+          return false
+        }
+        return true
+      })
+      .map(([key, { value }]) => [key, value])
   }
 
   delete(key: string): boolean {
