@@ -11,14 +11,16 @@ test.group('Cache class - Success', (group) => {
   })
 
   test('get() should return the value if key exists', async ({ assert }) => {
-    await cache.set(key, value)
-    const cacheValue = await cache.get(key)
+    const pair = { key, value }
+    cache.set(pair)
+    const cacheValue = cache.get(key)
     assert.deepEqual(cacheValue, value)
   })
 
   test('set() should set a key-value pair', async ({ assert }) => {
-    await cache.set(key, value)
-    const cacheValue = await cache.get(key)
+    const pair = { key, value }
+    cache.set(pair)
+    const cacheValue = cache.get(key)
     assert.deepEqual(cacheValue, value)
   })
 
@@ -26,7 +28,8 @@ test.group('Cache class - Success', (group) => {
     assert,
   }, done) => {
     const ttl = 1000
-    cache.set(key, value, ttl)
+    const pair = { key, value, expiry: ttl }
+    cache.set(pair)
     let cacheValue = cache.get(key)
     assert.deepEqual(cacheValue, value)
 
@@ -38,7 +41,8 @@ test.group('Cache class - Success', (group) => {
   }).waitForDone()
 
   test('delete() should delete a key-value pair', async ({ assert }) => {
-    await cache.set(key, value)
+    const pair = { key, value }
+    cache.set(pair)
     const cacheValue = cache.delete(key)
     assert.isTrue(cacheValue)
   })
@@ -71,9 +75,12 @@ test.group('Cache class - Failure', (group) => {
     assert.isFalse(cacheValue)
   })
 
-  test('has() should return false if key does not exist', async ({ assert }) => {
-    const cacheValue = cache.has(key)
-    assert.isFalse(cacheValue)
+  test('clear() should clear the cache', async ({ assert }) => {
+    const pair = { key, value }
+    cache.set(pair)
+    cache.clear()
+    const cacheValue = cache.get(key)
+    assert.isUndefined(cacheValue)
   })
 
   test('all() should return empty array if cache is empty', async ({ assert }) => {
@@ -82,7 +89,8 @@ test.group('Cache class - Failure', (group) => {
   })
 
   test('has() should return true if key exists', async ({ assert }) => {
-    cache.set(key, value)
+    const pair = { key, value }
+    cache.set(pair)
     const cacheValue = cache.has(key)
     assert.isTrue(cacheValue)
   })
@@ -93,7 +101,8 @@ test.group('Cache class - Failure', (group) => {
   })
 
   test('all() should return all the keys', async ({ assert }) => {
-    cache.set(key, value)
+    const pair = { key, value }
+    cache.set(pair)
     const keys = cache.all()
     assert.deepEqual(keys, [[key, value]])
   })
