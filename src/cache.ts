@@ -26,9 +26,9 @@ export class Cache implements CacheInterface {
     return entry.value
   }
 
-  set(pair: KeyValuePairInterface): void {
-    const expiry = pair.expiry ? Date.now() + pair.expiry : Number.POSITIVE_INFINITY
-    this.cache.set(pair.key, { value: pair.value, expiry })
+  set(key: string, value: object, expiry?: number): void {
+    const expiryResult = expiry ? Date.now() + expiry : Number.POSITIVE_INFINITY
+    this.cache.set(key, { value, expiry: expiryResult })
   }
 
   has(key: string): boolean {
