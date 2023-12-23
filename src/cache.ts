@@ -7,23 +7,28 @@ import { CacheInterface } from './types/cache_interface.js'
  * @implements {CacheInterface}
  */
 export class Cache implements CacheInterface {
-  protected cache: Map<string, object>
+  protected cache: Map<string, { value: object; expiry: number }>
 
   constructor() {
     this.cache = new Map()
   }
 
   get(key: string): object | undefined {
-    return this.cache.get(key)
+    const entry = this.cache.get(key)
+    if (!entry) return undefined
+
+    const now = Date.now()
+    if (now >= entry.expiry) {
+      console.log('Cache entry expired')
+      this.cache.delete(key)
+      return undefined
+    }
+    return entry.value
   }
 
   set(key: string, value: object, ttl?: number): void {
-    this.cache.set(key, value)
-    if (ttl) {
-      setTimeout(() => {
-        this.cache.delete(key)
-      }, ttl)
-    }
+    const expiry = ttl ? Date.now() + ttl : Number.POSITIVE_INFINITY
+    this.cache.set(key, { value, expiry })
   }
 
   has(key: string): boolean {
@@ -31,8 +36,16 @@ export class Cache implements CacheInterface {
   }
 
   all(): Array<[string, object]> {
-    const entries = this.cache.entries()
-    return [...entries]
+    const now = Date.now()
+    return Array.from(this.cache.entries())
+      .filter(([key, { expiry }]) => {
+        if (now >= expiry) {
+          this.cache.delete(key)
+          return false
+        }
+        return true
+      })
+      .map(([key, { value }]) => [key, value])
   }
 
   delete(key: string): boolean {
