@@ -11,15 +11,13 @@ test.group('Cache class - Success', (group) => {
   })
 
   test('get() should return the value if key exists', async ({ assert }) => {
-    const pair = { key, value }
-    cache.set(pair)
+    cache.set(key, value)
     const cacheValue = cache.get(key)
     assert.deepEqual(cacheValue, value)
   })
 
   test('set() should set a key-value pair', async ({ assert }) => {
-    const pair = { key, value }
-    cache.set(pair)
+    cache.set(key, value)
     const cacheValue = cache.get(key)
     assert.deepEqual(cacheValue, value)
   })
@@ -28,8 +26,7 @@ test.group('Cache class - Success', (group) => {
     assert,
   }, done) => {
     const ttl = 1000
-    const pair = { key, value, expiry: ttl }
-    cache.set(pair)
+    cache.set(key, value, ttl)
     let cacheValue = cache.get(key)
     assert.deepEqual(cacheValue, value)
 
@@ -41,8 +38,7 @@ test.group('Cache class - Success', (group) => {
   }).waitForDone()
 
   test('delete() should delete a key-value pair', async ({ assert }) => {
-    const pair = { key, value }
-    cache.set(pair)
+    cache.set(key, value)
     const cacheValue = cache.delete(key)
     assert.isTrue(cacheValue)
   })
@@ -76,8 +72,7 @@ test.group('Cache class - Failure', (group) => {
   })
 
   test('clear() should clear the cache', async ({ assert }) => {
-    const pair = { key, value }
-    cache.set(pair)
+    cache.set(key, value)
     cache.clear()
     const cacheValue = cache.get(key)
     assert.isUndefined(cacheValue)
@@ -89,8 +84,7 @@ test.group('Cache class - Failure', (group) => {
   })
 
   test('has() should return true if key exists', async ({ assert }) => {
-    const pair = { key, value }
-    cache.set(pair)
+    cache.set(key, value)
     const cacheValue = cache.has(key)
     assert.isTrue(cacheValue)
   })
@@ -101,8 +95,7 @@ test.group('Cache class - Failure', (group) => {
   })
 
   test('all() should return all the keys', async ({ assert }) => {
-    const pair = { key, value }
-    cache.set(pair)
+    cache.set(key, value)
     const keys = cache.all()
     assert.deepEqual(keys, [[key, value]])
   })
