@@ -1,5 +1,3 @@
-import { KeyValuePairInterface } from './key_value_pair_interface.js'
-
 /**
  * CacheInterface is an interface that defines the structure of a cache object.
  * It includes methods for getting, setting, deleting, and clearing cache entries,
@@ -17,9 +15,11 @@ export interface CacheInterface {
 
   /**
    * Sets the value of a cache entry with the specified key.
-   * @param pair - The key-value pair to be set.
+   * @param key - The key of the cache entry.
+   * @param value - The value in pair with key
+   * @param expiry - Expiry time to delete the cache entry
    */
-  set(pair: KeyValuePairInterface): void
+  set(key: string, value: object, expiry?: number): void
 
   /**
    * Deletes a cache entry with the specified key.
