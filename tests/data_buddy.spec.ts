@@ -7,7 +7,7 @@ const path = 'tmp'
 const filename = 'test'
 const data = { test: 'test' }
 
-test.group('DataBuddy class (success)', (group) => {
+test.group('File class (success)', (group) => {
   group.each.setup(async () => {
     await fs.mkdir('tests/tmp')
   })
@@ -45,7 +45,7 @@ test.group('DataBuddy class (success)', (group) => {
 const fileExist = `File ${filename} already exists in tests/${path}`
 const fileNotExist = `File ${filename} does not exist in tests/${path}`
 
-test.group('DataBuddy class (failure)', (group) => {
+test.group('File class (failure)', (group) => {
   group.each.setup(async () => {
     await fs.mkdir('tests/tmp')
   })
