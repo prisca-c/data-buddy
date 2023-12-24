@@ -3,7 +3,7 @@ import { test } from '@japa/runner'
 
 const cache = new Cache()
 const key = 'test'
-const value = { test: 'test' }
+const value = { value: 'test' }
 
 test.group('Cache class', (group) => {
   group.each.teardown(() => {
@@ -29,13 +29,18 @@ test.group('Cache class', (group) => {
 
   test('set() should set a key-value pair with a ttl and delete it after the ttl', async ({
     assert,
-  }) => {
-    cache.set(key, value, 100)
-    assert.isTrue(cache.has(key))
+  }, done) => {
+    const ttl = 1000
+    cache.set(key, value, ttl)
+    let cacheValue = cache.get(key)
+    assert.deepEqual(cacheValue, value)
+
     setTimeout(() => {
-      assert.isFalse(cache.has(key))
-    }, 101)
-  })
+      cacheValue = cache.get(key)
+      assert.isUndefined(cacheValue)
+      done()
+    }, ttl + 100) // Wait a bit longer than the TTL to ensure the key-value pair has been removed
+  }).waitForDone()
 
   test('delete() should delete a key-value pair', async ({ assert }) => {
     cache.set(key, value)

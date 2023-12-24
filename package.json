@@ -1,6 +1,6 @@
 {
   "name": "data-buddy",
-  "version": "0.0.3-1",
+  "version": "0.0.3-2",
   "description": "Data Buddy helps you to store and retrieve data from local json files",
   "type": "module",
   "engines": {
@@ -54,10 +54,6 @@
     "extends": "@adonisjs/eslint-config/package"
   },
   "prettier": "@adonisjs/prettier-config",
-  "publishConfig": {
-    "access": "public",
-    "tag": "latest"
-  },
   "tsup": {
     "entry": [
       "./index.ts",

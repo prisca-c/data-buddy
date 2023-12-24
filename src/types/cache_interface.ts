@@ -16,10 +16,10 @@ export interface CacheInterface {
   /**
    * Sets the value of a cache entry with the specified key.
    * @param key - The key of the cache entry.
-   * @param value - The value to set for the cache entry.
-   * @param ttl - The time-to-live (in seconds) for the cache entry. Optional.
+   * @param value - The value in pair with key
+   * @param expiry - Expiry time to delete the cache entry
    */
-  set(key: string, value: object, ttl?: number): void
+  set(key: string, value: object, expiry?: number): void
 
   /**
    * Deletes a cache entry with the specified key.
