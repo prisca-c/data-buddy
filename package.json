@@ -1,7 +1,7 @@
 {
   "name": "data-buddy",
   "version": "0.0.3-2",
-  "description": "Data Buddy helps you to store and retrieve data from local json files",
+  "description": "Data Buddy helps you to manage your data in a simple way. It can be used to cache data, store data in a file, and soon more.",
   "type": "module",
   "engines": {
     "node": ">=18.16.0"
@@ -12,11 +12,19 @@
     "build": "pnpm run clean && pnpm run compile",
     "compile": "tsup-node",
     "publish": "pnpm run build && pnpm publish",
-    "publish:latest": "npm run publish --tag latest",
-    "publish:next": "npm run publish --tag next",
+    "publish:latest": "npm publish --tag latest",
+    "publish:next": "npm publish --tag next",
     "test": "node --loader ts-node/esm --enable-source-maps bin/test.ts"
   },
-  "keywords": [],
+  "keywords": [
+    "data",
+    "cache",
+    "file",
+    "json",
+    "data-buddy",
+    "easy",
+    "simple"
+  ],
   "author": "prisca-c",
   "license": "MIT",
   "main": "dist/index.js",
