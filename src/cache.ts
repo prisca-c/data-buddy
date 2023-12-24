@@ -31,11 +31,6 @@ export class Cache implements CacheInterface {
     this.cache.set(key, { value, expiry: expiryResult })
   }
 
-  async set(key: string, value: object, expiry?: number): Promise<void> {
-    const expiryResult = expiry ? Date.now() + expiry : Number.POSITIVE_INFINITY
-    this.cache.set(key, { value, expiry: expiryResult })
-  }
-
   has(key: string): boolean {
     return this.cache.has(key)
   }
