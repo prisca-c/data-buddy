@@ -5,6 +5,7 @@ import type { FileInterface, BaseParams, ReturnData, UpsertParams } from './type
 /**
  * Class implementing the FileInterface interface.
  * @class
+ * @implements {FileInterface}
  */
 export class File extends DataBuddyUtils implements FileInterface {
   constructor(basePath?: string) {
