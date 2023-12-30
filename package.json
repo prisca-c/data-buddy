@@ -1,6 +1,6 @@
 {
   "name": "data-buddy",
-  "version": "0.0.3-2",
+  "version": "0.0.4",
   "description": "Data Buddy helps you to manage your data in a simple way. It can be used to cache data, store data in a file, and soon more.",
   "type": "module",
   "engines": {
