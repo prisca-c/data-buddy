@@ -68,15 +68,15 @@ const cache = new Cache();
 
 ### Get key
 ```js
-cache.get("key");
+await cache.get("key");
 ```
 
 ### Set key
 ```js
-cache.set("key", "value");
+await cache.set("key", "value");
 
 //cache with expiration time
-cache.set("key", "value", 1000); //time in ms
+await cache.set("key", "value", 1000); //time in ms
 ```
 
 ### Delete key

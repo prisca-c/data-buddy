@@ -14,7 +14,7 @@ export class Cache implements CacheInterface {
     this.cache = new Map()
   }
 
-  get(key: string): object | undefined {
+  async get(key: string): Promise<object | undefined> {
     const entry = this.cache.get(key)
     if (!entry) return undefined
 
@@ -26,7 +26,7 @@ export class Cache implements CacheInterface {
     return entry.value
   }
 
-  set(key: string, value: object, expiry?: number): void {
+  async set(key: string, value: object, expiry?: number): Promise<void> {
     const expiryResult = expiry ? Date.now() + expiry : Number.POSITIVE_INFINITY
     this.cache.set(key, { value, expiry: expiryResult })
   }
@@ -37,15 +37,15 @@ export class Cache implements CacheInterface {
 
   all(): Array<[string, object]> {
     const now = Date.now()
-    return Array.from(this.cache.entries())
-      .filter(([key, { expiry }]) => {
-        if (expiry && now >= expiry) {
-          this.cache.delete(key)
-          return false
-        }
-        return true
-      })
-      .map(([key, { value }]) => [key, value])
+    const result: Array<[string, object]> = []
+    for (const [key, { value, expiry }] of this.cache) {
+      if (expiry && now >= expiry) {
+        this.cache.delete(key)
+      } else {
+        result.push([key, value])
+      }
+    }
+    return result
   }
 
   delete(key: string): boolean {
