@@ -73,6 +73,15 @@ await file.create({
   filename: "user1",
   data: { name: "John", age: 30 } // Type-checked
 });
+// File created at: basePath/users/user1.json
+
+// With formatting
+await file.create({
+  path: "users",
+  filename: "user1",
+  data: { name: "John", age: 30 },
+  format: true // Pretty prints the JSON
+});
 ```
 
 ### Read
@@ -106,6 +115,15 @@ await file.update({
 // Note: Merge is shallow - nested objects are replaced entirely
 // If file contains { user: { name: "John" }, status: "active" } and data { user: { age: 30 } },
 // it becomes { user: { age: 30 }, status: "active" } (user.name is lost, but status is kept)
+
+// With formatting
+await file.update({
+  path: "users",
+  filename: "user1",
+  data: { age: 26 },
+  mode: "merge",
+  format: true
+});
 ```
 
 ### Delete

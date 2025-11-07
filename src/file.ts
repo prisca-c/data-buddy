@@ -31,7 +31,7 @@ export class File<T = unknown> extends DataBuddyUtils implements FileInterface<T
     }
   }
 
-  async create({ path, filename, data }: UpsertParams<T>): Promise<ReturnData<T>> {
+  async create({ path, filename, data, format = false }: UpsertParams<T>): Promise<ReturnData<T>> {
     this.validatePathAndFilename(path, filename)
     const sanitizedData = this.sanitizeData(data)
     const workingPath = this.workingPath(path)
@@ -40,18 +40,28 @@ export class File<T = unknown> extends DataBuddyUtils implements FileInterface<T
       throw new Error(`File ${filename} already exists in ${workingPath}`)
     }
     await fs.mkdir(workingPath, { recursive: true })
-    await fs.writeFile(`${workingPath}/${filename}.json`, JSON.stringify(sanitizedData, null, 4))
+    await fs.writeFile(
+      `${workingPath}/${filename}.json`,
+      JSON.stringify(sanitizedData, null, format ? 4 : 0)
+    )
     return this.read({ path, filename })
   }
 
-  async update(params: BaseParams & { data: T; mode?: 'replace' }): Promise<ReturnData<T>>
-  async update(params: BaseParams & { data: Partial<T>; mode: 'merge' }): Promise<ReturnData<T>>
+  async update(
+    params: BaseParams & { data: T; mode?: 'replace'; format?: boolean }
+  ): Promise<ReturnData<T>>
+  async update(
+    params: BaseParams & { data: Partial<T>; mode: 'merge'; format?: boolean }
+  ): Promise<ReturnData<T>>
   async update({
     path,
     filename,
     data,
     mode = 'replace',
-  }: BaseParams & { data: T | Partial<T>; mode?: 'replace' | 'merge' }): Promise<ReturnData<T>> {
+    format = false,
+  }: BaseParams & { data: T | Partial<T>; mode?: 'replace' | 'merge'; format?: boolean }): Promise<
+    ReturnData<T>
+  > {
     this.validatePathAndFilename(path, filename)
     const workingPath = this.workingPath(path)
 
@@ -70,7 +80,10 @@ export class File<T = unknown> extends DataBuddyUtils implements FileInterface<T
       updatedData = data as T
     }
 
-    await fs.writeFile(`${workingPath}/${filename}.json`, JSON.stringify(updatedData, null, 4))
+    await fs.writeFile(
+      `${workingPath}/${filename}.json`,
+      JSON.stringify(updatedData, null, format ? 4 : 0)
+    )
     return this.read({ path, filename })
   }
 
