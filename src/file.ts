@@ -39,6 +39,7 @@ export class File<T = unknown> extends DataBuddyUtils implements FileInterface<T
     if (await this.read({ path, filename })) {
       throw new Error(`File ${filename} already exists in ${workingPath}`)
     }
+    await fs.mkdir(workingPath, { recursive: true })
     await fs.writeFile(`${workingPath}/${filename}.json`, JSON.stringify(sanitizedData, null, 4))
     return this.read({ path, filename })
   }
