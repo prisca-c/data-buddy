@@ -36,16 +36,15 @@ export interface FileInterface<T = unknown> {
    * With mode 'merge', it performs a shallow merge of the updates into existing data.
    * It takes an object with `path`, `filename`, `data`, and optional `mode`.
    * It returns a Promise that resolves with the updated data from the file or null if an error occurs.
-   *
-   * @param {BaseParams & { data: T; mode?: 'replace' | 'merge' }} { path, filename, data, mode }
-   * @returns {Promise<ReturnData<T>>}
    */
+  update(params: BaseParams & { data: T; mode?: 'replace' }): Promise<ReturnData<T>>
+  update(params: BaseParams & { data: Partial<T>; mode: 'merge' }): Promise<ReturnData<T>>
   update({
     path,
     filename,
     data,
     mode,
-  }: BaseParams & { data: T; mode?: 'replace' | 'merge' }): Promise<ReturnData<T>>
+  }: BaseParams & { data: T | Partial<T>; mode?: 'replace' | 'merge' }): Promise<ReturnData<T>>
 
   /**
    * The `delete` method is used to delete a file.
