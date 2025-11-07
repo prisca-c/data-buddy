@@ -74,4 +74,52 @@ test.group('File class (failure)', (group) => {
     const result = await dataBuddy.delete({ path, filename })
     assert.equal(result, false)
   })
+
+  test('isValidJson() should return true for valid JSON file', async ({ assert }) => {
+    await dataBuddy.create({ path, filename, data })
+    const result = await dataBuddy.isValidJson({ path, filename })
+    assert.isTrue(result)
+  })
+
+  test('isValidJson() should return false for invalid JSON file', async ({ assert }) => {
+    // Create a file with invalid JSON
+    const workingPath = dataBuddy['workingPath'](path)
+    await fs.writeFile(`${workingPath}/${filename}.json`, '{ invalid json')
+    const result = await dataBuddy.isValidJson({ path, filename })
+    assert.isFalse(result)
+  })
+
+  test('isValidJson() should return false for non-existent file', async ({ assert }) => {
+    const result = await dataBuddy.isValidJson({ path, filename })
+    assert.isFalse(result)
+  })
+
+  test('isValidData() should return true for valid data matching validator', async ({ assert }) => {
+    await dataBuddy.create({ path, filename, data })
+    const result = await dataBuddy.isValidData({
+      path,
+      filename,
+      validator: (d) =>
+        typeof d === 'object' && d !== null && 'test' in (d as Record<string, unknown>),
+    })
+    assert.isTrue(result)
+  })
+
+  test('isValidData() should return false for data not matching validator', async ({ assert }) => {
+    await dataBuddy.create({ path, filename, data })
+    const result = await dataBuddy.isValidData({
+      path,
+      filename,
+      validator: (d) => typeof d === 'string',
+    })
+    assert.isFalse(result)
+  })
+
+  test('isValidData() should return false for invalid JSON', async ({ assert }) => {
+    // Create a file with invalid JSON
+    const workingPath = dataBuddy['workingPath'](path)
+    await fs.writeFile(`${workingPath}/${filename}.json`, '{ invalid json')
+    const result = await dataBuddy.isValidData({ path, filename })
+    assert.isFalse(result)
+  })
 })
