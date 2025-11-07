@@ -5,13 +5,13 @@
  *
  * @interface
  */
-export interface CacheInterface {
+export interface CacheInterface<T = unknown> {
   /**
    * Retrieves the value of a cache entry with the specified key.
    * @param key - The key of the cache entry.
    * @returns The value of the cache entry, or undefined if the entry does not exist.
    */
-  get(key: string): object | undefined
+  get(key: string): Promise<T | undefined>
 
   /**
    * Sets the value of a cache entry with the specified key.
@@ -19,7 +19,7 @@ export interface CacheInterface {
    * @param value - The value in pair with key
    * @param expiry - Expiry time to delete the cache entry
    */
-  set(key: string, value: object, expiry?: number): void
+  set(key: string, value: T, expiry?: number): Promise<void>
 
   /**
    * Deletes a cache entry with the specified key.
@@ -37,5 +37,5 @@ export interface CacheInterface {
    * Retrieves all entries from the cache.
    * @returns An array of key-value pairs.
    */
-  all(): Array<[string, object]>
+  all(): Array<[string, T]>
 }

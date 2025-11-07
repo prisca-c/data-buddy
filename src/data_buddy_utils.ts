@@ -39,7 +39,7 @@ export class DataBuddyUtils {
     return /^[a-zA-Z0-9_.-]*$/.test(filename)
   }
 
-  protected sanitizeData(data: object): object {
+  protected sanitizeData(data: unknown): unknown {
     const sanitizedData = JSON.parse(JSON.stringify(data))
     for (const key in sanitizedData) {
       if (typeof sanitizedData[key] === 'string') {

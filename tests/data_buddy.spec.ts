@@ -71,6 +71,7 @@ test.group('File class (failure)', (group) => {
   })
 
   test('delete() should return false if file does not exist', async ({ assert }) => {
-    await assert.rejects(async () => await dataBuddy.delete({ path, filename }), fileNotExist)
+    const result = await dataBuddy.delete({ path, filename })
+    assert.equal(result, false)
   })
 })
