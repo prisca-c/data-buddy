@@ -70,4 +70,31 @@ export class File<T = unknown> extends DataBuddyUtils implements FileInterface<T
       }
     }
   }
+
+  async isValidJson({ path, filename }: BaseParams): Promise<boolean> {
+    try {
+      const data = await this.read({ path, filename })
+      return data !== null
+    } catch {
+      return false
+    }
+  }
+
+  async isValidData({
+    path,
+    filename,
+    validator,
+  }: BaseParams & { validator?: (data: unknown) => boolean }): Promise<boolean> {
+    try {
+      const data = await this.read({ path, filename })
+      if (data === null) return false
+      if (validator) {
+        return validator(data)
+      }
+      // If no validator, just check if it's valid JSON (already done by read)
+      return true
+    } catch {
+      return false
+    }
+  }
 }

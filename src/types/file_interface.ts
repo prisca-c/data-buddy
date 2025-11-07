@@ -52,4 +52,20 @@ export interface FileInterface<T = unknown> {
    * @returns {Promise<boolean>}
    */
   delete({ path, filename }: BaseParams): Promise<boolean>
+
+  /**
+   * The `isValidData` method checks if the file data matches the expected structure.
+   * It takes an object with `path`, `filename`, and an optional `validator` function.
+   * The `validator` is a function that takes the parsed data and returns true if valid.
+   * If no validator is provided, it just checks if the file contains valid JSON.
+   * It returns a Promise that resolves with a boolean indicating if the data is valid.
+   *
+   * @param {BaseParams & { validator?: (data: unknown) => boolean }} { path, filename, validator }
+   * @returns {Promise<boolean>}
+   */
+  isValidData({
+    path,
+    filename,
+    validator,
+  }: BaseParams & { validator?: (data: unknown) => boolean }): Promise<boolean>
 }
