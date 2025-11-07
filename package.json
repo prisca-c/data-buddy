@@ -11,7 +11,6 @@
     "lint": "npx eslint . --ext=.ts",
     "build": "npm run clean && npm run compile",
     "compile": "tsup-node",
-    "publish": "npm run build && npm publish",
     "publish:latest": "npm publish --tag latest",
     "publish:next": "npm publish --tag next",
     "test": "node --loader ts-node/esm --enable-source-maps bin/test.ts"
