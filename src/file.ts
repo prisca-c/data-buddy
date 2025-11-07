@@ -7,7 +7,7 @@ import type { FileInterface, BaseParams, ReturnData, UpsertParams } from './type
  * @class
  * @implements {FileInterface}
  */
-export class File extends DataBuddyUtils implements FileInterface {
+export class File<T = unknown> extends DataBuddyUtils implements FileInterface<T> {
   constructor(basePath?: string) {
     super()
     if (basePath) {
@@ -16,7 +16,7 @@ export class File extends DataBuddyUtils implements FileInterface {
     }
   }
 
-  async read({ path, filename }: BaseParams): Promise<ReturnData> {
+  async read({ path, filename }: BaseParams): Promise<ReturnData<T>> {
     try {
       this.validatePathAndFilename(path, filename)
       const workingPath = this.workingPath(path)
@@ -31,7 +31,7 @@ export class File extends DataBuddyUtils implements FileInterface {
     }
   }
 
-  async create({ path, filename, data }: UpsertParams): Promise<ReturnData> {
+  async create({ path, filename, data }: UpsertParams<T>): Promise<ReturnData<T>> {
     this.validatePathAndFilename(path, filename)
     const sanitizedData = this.sanitizeData(data)
     const workingPath = this.workingPath(path)
@@ -43,7 +43,7 @@ export class File extends DataBuddyUtils implements FileInterface {
     return this.read({ path, filename })
   }
 
-  async update({ path, filename, data }: UpsertParams): Promise<ReturnData> {
+  async update({ path, filename, data }: UpsertParams<T>): Promise<ReturnData<T>> {
     this.validatePathAndFilename(path, filename)
     const sanitizedData = this.sanitizeData(data)
     const workingPath = this.workingPath(path)
@@ -59,10 +59,15 @@ export class File extends DataBuddyUtils implements FileInterface {
     this.validatePathAndFilename(path, filename)
     const workingPath = this.workingPath(path)
 
-    if (!(await this.read({ path, filename }))) {
-      throw new Error(`File ${filename} does not exist in ${workingPath}`)
+    try {
+      await fs.unlink(`${workingPath}/${filename}.json`)
+      return true
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        return false
+      } else {
+        throw error
+      }
     }
-    await fs.unlink(`${workingPath}/${filename}.json`)
-    return true
   }
 }

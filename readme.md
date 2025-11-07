@@ -15,88 +15,128 @@ pnpm install data-buddy
 yarn add data-buddy
 ```
 
+## Quick Start with DataBuddy
 
-## Usage to handle json files
-```js
-import { File } from 'data-buddy/file';
+```ts
+import { DataBuddy } from 'data-buddy';
 
-const file = new File();
-//or if you want to specify a base path
-const file = new File("path/to");
+// Define interfaces for type safety
+interface User {
+  name: string;
+  age?: number;
+}
+
+// For type safety, specify the types for file data and cache values
+const db = new DataBuddy<User, string>();
+// or with a base path for files
+const db = new DataBuddy('path/to/base');
+
+const cache = db.getCache(); // Cache<string>
+const file = db.getFile(); // File<User>
 ```
 
+## Usage to handle json files
+```ts
+import { File } from 'data-buddy';
+
+// Define an interface for your data
+interface User {
+  name: string;
+  age?: number;
+}
+
+// Specify the type for file data
+const file = new File<User>();
+//or if you want to specify a base path
+const file = new File("storage"); // base path for all files
+// or target the project root
+const file = new File(process.cwd()); // base path is the current working directory
+```
+
+### File Path Explanation
+- **basePath** (optional): The root directory for all file operations. If not specified, files are created relative to the current working directory.
+- **path**: The subdirectory within the basePath.
+- **filename**: The name of the file (without .json extension).
+
+**Example**: With `basePath = "storage"`, `path = "users"`, `filename = "user1"`, the file is created at `storage/users/user1.json`.
+
 ### Create
-```js
-file.create({ 
-  path: "data", //path to the file (if base path is specified, this will be added to it)
-  filename: "best_buddy", //name of the file
-  data: { name: "buddy" } //data to store
+```ts
+await file.create({ 
+  path: "users", // subdirectory within basePath
+  filename: "user1", // file name (will be user1.json)
+  data: { name: "John", age: 30 } // data to store - type checked
 });
+// File created at: basePath/users/user1.json (e.g., storage/users/user1.json)
 ```
 
 ### Read
-```js
-
-file.read({ 
+```ts
+const data = await file.read({ 
   path: "data", //path to the file
   filename: "best_buddy" //name of the file
 });
+// data is User | null
 ```
 
 ### Update
-```js
-file.update({ 
+```ts
+await file.update({ 
   path: "data", //path to the file
   filename: "best_buddy", //name of the file
-  data: { name: "buddy" } //data to store
+  data: { name: "buddy", age: 26 } //data to store - type checked
 });
 ```
 
 ### Delete
-```js
-file.delete({ 
+```ts
+await file.delete({ 
   path: "data", //path to the file
   filename: "best_buddy" //name of the file
 });
 ```
 
 ## Usage to handle cache
-```js
-import { Cache } from 'data-buddy/cache';
-const cache = new Cache();
+```ts
+import { Cache } from 'data-buddy';
+
+// Specify the type for cache values
+const cache = new Cache<string>();
 ```
 
 ### Get key
-```js
-await cache.get("key");
+```ts
+const value = await cache.get("key");
+// value is string | undefined
 ```
 
 ### Set key
-```js
-await cache.set("key", "value");
+```ts
+await cache.set("key", "value"); // type checked
 
 //cache with expiration time
 await cache.set("key", "value", 1000); //time in ms
 ```
 
 ### Delete key
-```js
+```ts
 cache.delete("key");
 ```
 
 ### Clear all cache
-```js
+```ts
 cache.clear();
 ```
 
 ### Has key
-```js
+```ts
 cache.has("key");
 ```
 
 ### All keys
-```js
-cache.all();
+```ts
+const all = cache.all();
+// all is Array<[string, string]>
 ```
 
 ### Why use data-buddy?

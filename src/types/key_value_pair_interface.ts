@@ -1,5 +1,5 @@
-export interface KeyValuePairInterface {
+export interface KeyValuePairInterface<T = unknown> {
   key: string
-  value: object
+  value: T
   expiry?: number
 }
