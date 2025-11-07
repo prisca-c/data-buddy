@@ -44,12 +44,14 @@ export class File<T = unknown> extends DataBuddyUtils implements FileInterface<T
     return this.read({ path, filename })
   }
 
+  async update(params: BaseParams & { data: T; mode?: 'replace' }): Promise<ReturnData<T>>
+  async update(params: BaseParams & { data: Partial<T>; mode: 'merge' }): Promise<ReturnData<T>>
   async update({
     path,
     filename,
     data,
     mode = 'replace',
-  }: BaseParams & { data: T; mode?: 'replace' | 'merge' }): Promise<ReturnData<T>> {
+  }: BaseParams & { data: T | Partial<T>; mode?: 'replace' | 'merge' }): Promise<ReturnData<T>> {
     this.validatePathAndFilename(path, filename)
     const workingPath = this.workingPath(path)
 
@@ -65,7 +67,7 @@ export class File<T = unknown> extends DataBuddyUtils implements FileInterface<T
       }
       updatedData = { ...currentData, ...data }
     } else {
-      updatedData = data
+      updatedData = data as T
     }
 
     await fs.writeFile(`${workingPath}/${filename}.json`, JSON.stringify(updatedData, null, 4))
