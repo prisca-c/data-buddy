@@ -43,15 +43,31 @@ export class File<T = unknown> extends DataBuddyUtils implements FileInterface<T
     return this.read({ path, filename })
   }
 
-  async update({ path, filename, data }: UpsertParams<T>): Promise<ReturnData<T>> {
+  async update({
+    path,
+    filename,
+    data,
+    mode = 'replace',
+  }: BaseParams & { data: T; mode?: 'replace' | 'merge' }): Promise<ReturnData<T>> {
     this.validatePathAndFilename(path, filename)
-    const sanitizedData = this.sanitizeData(data)
     const workingPath = this.workingPath(path)
 
     if (!(await this.read({ path, filename }))) {
       throw new Error(`File ${filename} does not exist in ${workingPath}`)
     }
-    await fs.writeFile(`${workingPath}/${filename}.json`, JSON.stringify(sanitizedData, null, 4))
+
+    let updatedData: T
+    if (mode === 'merge') {
+      const currentData = await this.read({ path, filename })
+      if (!currentData) {
+        throw new Error(`File ${filename} does not exist in ${workingPath}`)
+      }
+      updatedData = { ...currentData, ...data }
+    } else {
+      updatedData = data
+    }
+
+    await fs.writeFile(`${workingPath}/${filename}.json`, JSON.stringify(updatedData, null, 4))
     return this.read({ path, filename })
   }
 
