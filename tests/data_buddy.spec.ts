@@ -35,6 +35,22 @@ test.group('File class (success)', (group) => {
     assert.deepEqual(fileData, newData)
   })
 
+  test('update() with merge mode should merge updates into existing data', async ({ assert }) => {
+    const initialData = { name: 'John', age: 30 }
+    await dataBuddy.create({ path, filename, data: initialData })
+    const updates = { age: 31, active: true }
+    const fileData = await dataBuddy.update({ path, filename, data: updates, mode: 'merge' })
+    assert.deepEqual(fileData, { name: 'John', age: 31, active: true })
+  })
+
+  test('update() with merge mode should replace nested objects', async ({ assert }) => {
+    const initialData = { user: { name: 'John', profile: { city: 'Paris' } }, status: 'active' }
+    await dataBuddy.create({ path, filename, data: initialData })
+    const updates = { user: { age: 30 } }
+    const fileData = await dataBuddy.update({ path, filename, data: updates, mode: 'merge' })
+    assert.deepEqual(fileData, { user: { age: 30 }, status: 'active' })
+  })
+
   test('delete() should delete a file', async ({ assert }) => {
     await dataBuddy.create({ path, filename, data })
     const fileData = await dataBuddy.delete({ path, filename })

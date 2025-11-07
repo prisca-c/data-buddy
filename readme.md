@@ -87,11 +87,25 @@ const data = await file.read({
 ### Update
 
 ```ts
+// Replace entire file content (default)
 await file.update({
   path: "users",
   filename: "user1",
   data: { name: "Jane", age: 25 }
 });
+
+// Or merge updates into existing data
+await file.update({
+  path: "users",
+  filename: "user1",
+  data: { age: 26, active: true },
+  mode: "merge"
+});
+// Example: If file contains { name: "John", age: 25 }, it becomes { name: "John", age: 26, active: true }
+
+// Note: Merge is shallow - nested objects are replaced entirely
+// If file contains { user: { name: "John" }, status: "active" } and data { user: { age: 30 } },
+// it becomes { user: { age: 30 }, status: "active" } (user.name is lost, but status is kept)
 ```
 
 ### Delete

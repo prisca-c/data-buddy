@@ -32,15 +32,20 @@ export interface FileInterface<T = unknown> {
   create({ path, filename, data }: UpsertParams<T>): Promise<ReturnData<T>>
 
   /**
-   * The `update` method is used to update the data in an existing file.
-   * It takes an object with `path`, `filename`, and `data` properties as an argument.
-   * The `path` is the directory where the file is located, `filename` is the name of the file, and `data` is the new data to be written to the file.
+   * The `update` method updates the file data. By default, it replaces the entire content.
+   * With mode 'merge', it performs a shallow merge of the updates into existing data.
+   * It takes an object with `path`, `filename`, `data`, and optional `mode`.
    * It returns a Promise that resolves with the updated data from the file or null if an error occurs.
    *
-   * @param {UpsertParams<T>} { path, filename, data }
+   * @param {BaseParams & { data: T; mode?: 'replace' | 'merge' }} { path, filename, data, mode }
    * @returns {Promise<ReturnData<T>>}
    */
-  update({ path, filename, data }: UpsertParams<T>): Promise<ReturnData<T>>
+  update({
+    path,
+    filename,
+    data,
+    mode,
+  }: BaseParams & { data: T; mode?: 'replace' | 'merge' }): Promise<ReturnData<T>>
 
   /**
    * The `delete` method is used to delete a file.
