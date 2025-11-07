@@ -1,6 +1,6 @@
 export type ReturnData<T = unknown> = T | null
 export type BaseParams = { path: string; filename: string }
-export type UpsertParams<T = unknown> = BaseParams & { data: T }
+export type UpsertParams<T = unknown> = BaseParams & { data: T; format?: boolean }
 
 /**
  * `FileInterface` is an interface that defines the structure for the `DataBuddy` class.
@@ -37,14 +37,21 @@ export interface FileInterface<T = unknown> {
    * It takes an object with `path`, `filename`, `data`, and optional `mode`.
    * It returns a Promise that resolves with the updated data from the file or null if an error occurs.
    */
-  update(params: BaseParams & { data: T; mode?: 'replace' }): Promise<ReturnData<T>>
-  update(params: BaseParams & { data: Partial<T>; mode: 'merge' }): Promise<ReturnData<T>>
+  update(
+    params: BaseParams & { data: T; mode?: 'replace'; format?: boolean }
+  ): Promise<ReturnData<T>>
+  update(
+    params: BaseParams & { data: Partial<T>; mode: 'merge'; format?: boolean }
+  ): Promise<ReturnData<T>>
   update({
     path,
     filename,
     data,
     mode,
-  }: BaseParams & { data: T | Partial<T>; mode?: 'replace' | 'merge' }): Promise<ReturnData<T>>
+    format,
+  }: BaseParams & { data: T | Partial<T>; mode?: 'replace' | 'merge'; format?: boolean }): Promise<
+    ReturnData<T>
+  >
 
   /**
    * The `delete` method is used to delete a file.
