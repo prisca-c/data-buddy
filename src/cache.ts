@@ -7,14 +7,14 @@ import { KeyValuePairInterface } from './types/key_value_pair_interface.js'
  * @class
  * @implements {CacheInterface}
  */
-export class Cache implements CacheInterface {
-  protected cache: Map<string, Omit<KeyValuePairInterface, 'key'>>
+export class Cache<T = unknown> implements CacheInterface<T> {
+  protected cache: Map<string, Omit<KeyValuePairInterface<T>, 'key'>>
 
   constructor() {
     this.cache = new Map()
   }
 
-  async get(key: string): Promise<object | undefined> {
+  async get(key: string): Promise<T | undefined> {
     const entry = this.cache.get(key)
     if (!entry) return undefined
 
@@ -26,7 +26,7 @@ export class Cache implements CacheInterface {
     return entry.value
   }
 
-  async set(key: string, value: object, expiry?: number): Promise<void> {
+  async set(key: string, value: T, expiry?: number): Promise<void> {
     const expiryResult = expiry ? Date.now() + expiry : Number.POSITIVE_INFINITY
     this.cache.set(key, { value, expiry: expiryResult })
   }
@@ -35,9 +35,9 @@ export class Cache implements CacheInterface {
     return this.cache.has(key)
   }
 
-  all(): Array<[string, object]> {
+  all(): Array<[string, T]> {
     const now = Date.now()
-    const result: Array<[string, object]> = []
+    const result: Array<[string, T]> = []
     for (const [key, { value, expiry }] of this.cache) {
       if (expiry && now >= expiry) {
         this.cache.delete(key)
