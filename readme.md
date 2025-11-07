@@ -3,17 +3,24 @@
 [![npm version](https://badge.fury.io/js/data-buddy.svg)](https://badge.fury.io/js/data-buddy)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Simple package to help you store and retrieve data from a json file 
-in a simple way. It also allows you to cache data.
+Simple package to help you store and retrieve data from a JSON file in a simple way. It also allows you to cache data.
 
-For the lazy people like me, who don't want to write a lot of code to store 
-and retrieve data from a json file or caching data.
+For the lazy people like me, who don't want to write a lot of code to store and retrieve data from a JSON file or caching data.
 
 ```bash
 npm install data-buddy
 pnpm install data-buddy
 yarn add data-buddy
 ```
+
+## Table of Contents
+
+- [Quick Start](#quick-start-with-databuddy)
+- [File Operations](#usage-to-handle-json-files)
+- [Cache Operations](#usage-to-handle-cache)
+- [Why Data Buddy?](#why-use-data-buddy)
+- [Contributing](#are-contributions-welcome)
+- [License](#license)
 
 ## Quick Start with DataBuddy
 
@@ -26,134 +33,147 @@ interface User {
   age?: number;
 }
 
-// For type safety, specify the types for file data and cache values
+// DataBuddy provides a unified interface for both file and cache operations
+// with shared type parameters. Use it when you need both features together.
 const db = new DataBuddy<User, string>();
-// or with a base path for files
-const db = new DataBuddy('path/to/base');
 
 const cache = db.getCache(); // Cache<string>
 const file = db.getFile(); // File<User>
 ```
 
-## Usage to handle json files
+*Alternatively, use `File` and `Cache` classes separately for more granular control.*
+
+## Usage to handle JSON files
+
 ```ts
 import { File } from 'data-buddy';
 
-// Define an interface for your data
+// Define your data interface
 interface User {
   name: string;
   age?: number;
 }
 
-// Specify the type for file data
-const file = new File<User>();
-//or if you want to specify a base path
-const file = new File("storage"); // base path for all files
-// or target the project root
-const file = new File(process.cwd()); // base path is the current working directory
+const file = new File<User>('storage'); // Optional base path
 ```
 
-### File Path Explanation
-- **basePath** (optional): The root directory for all file operations. If not specified, files are created relative to the current working directory.
-- **path**: The subdirectory within the basePath.
-- **filename**: The name of the file (without .json extension).
+### File Path Structure
 
-**Example**: With `basePath = "storage"`, `path = "users"`, `filename = "user1"`, the file is created at `storage/users/user1.json`.
+- **basePath** (optional): Root directory for files. Defaults to current directory.
+- **path**: Subdirectory within basePath.
+- **filename**: File name without `.json`.
+
+**Example**: `basePath="storage"`, `path="users"`, `filename="user1"` → `storage/users/user1.json`.
 
 ### Create
+
 ```ts
-await file.create({ 
-  path: "users", // subdirectory within basePath
-  filename: "user1", // file name (will be user1.json)
-  data: { name: "John", age: 30 } // data to store - type checked
+await file.create({
+  path: "users",
+  filename: "user1",
+  data: { name: "John", age: 30 } // Type-checked
 });
-// File created at: basePath/users/user1.json (e.g., storage/users/user1.json)
 ```
 
 ### Read
+
 ```ts
-const data = await file.read({ 
-  path: "data", //path to the file
-  filename: "best_buddy" //name of the file
-});
-// data is User | null
+const data = await file.read({
+  path: "users",
+  filename: "user1"
+}); // User | null
 ```
 
 ### Update
+
 ```ts
-await file.update({ 
-  path: "data", //path to the file
-  filename: "best_buddy", //name of the file
-  data: { name: "buddy", age: 26 } //data to store - type checked
+await file.update({
+  path: "users",
+  filename: "user1",
+  data: { name: "Jane", age: 25 }
 });
 ```
 
 ### Delete
+
 ```ts
-await file.delete({ 
-  path: "data", //path to the file
-  filename: "best_buddy" //name of the file
+await file.delete({
+  path: "users",
+  filename: "user1"
+}); // boolean
+```
+
+### Validate Data
+
+```ts
+// Check JSON validity
+await file.isValidJson({ path: "users", filename: "user1" }); // boolean
+
+// Validate data structure with custom function
+const isUser = (data: unknown): data is User =>
+  typeof data === 'object' && data !== null &&
+  'name' in data && typeof (data as any).name === 'string';
+
+await file.isValidData({
+  path: "users",
+  filename: "user1",
+  validator: isUser
+}); // boolean
+
+// Or use a schema validation library (Zod shown as example, but others work too)
+import { z } from 'zod';
+
+const userSchema = z.object({
+  name: z.string(),
+  age: z.number().optional(),
 });
+
+await file.isValidData({
+  path: "users",
+  filename: "user1",
+  validator: (data) => userSchema.safeParse(data).success
+}); // boolean
 ```
 
 ## Usage to handle cache
+
 ```ts
 import { Cache } from 'data-buddy';
 
-// Specify the type for cache values
 const cache = new Cache<string>();
 ```
 
-### Get key
-```ts
-const value = await cache.get("key");
-// value is string | undefined
-```
+### Basic Operations
 
-### Set key
 ```ts
-await cache.set("key", "value"); // type checked
-
-//cache with expiration time
-await cache.set("key", "value", 1000); //time in ms
-```
-
-### Delete key
-```ts
+await cache.set("key", "value");
+const value = await cache.get("key"); // string | undefined
 cache.delete("key");
-```
-
-### Clear all cache
-```ts
+cache.has("key"); // boolean
+cache.all(); // Array<[string, string]>
 cache.clear();
 ```
 
-### Has key
+### With Expiration
+
 ```ts
-cache.has("key");
+await cache.set("key", "value", 60000); // Expires in 60 seconds
 ```
 
-### All keys
-```ts
-const all = cache.all();
-// all is Array<[string, string]>
-```
+## Why use data-buddy?
 
-### Why use data-buddy?
-Because if you're here, it's probably 
-because you're lazy like me and don't want to write a lot of 
-code to store and retrieve data from a json file or caching data.
+- **Simple**: Easy to use for JSON file storage and caching.
+- **Type-safe**: Full TypeScript support with generics.
+- **Lightweight**: No heavy dependencies.
 
 ### Why not use data-buddy?
-If you want to store a lot of data, it's better to use a database.
 
-### Are contributions welcome?
-Yes, since this package has been made from a personal need to learn
-how to publish a package on npm, I'm open to any contributions to improve it !
+If you need to store large amounts of data or complex queries, consider a database.
 
-### How to contribute?
-You can simply open an issue or a pull request. 
-(No template for now but if you want to add one, feel free to share it !)
+## Are contributions welcome?
 
-### License
+Yes! Open issues or PRs to improve the package.
+
+## License
+
 MIT
