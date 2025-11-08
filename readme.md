@@ -1,6 +1,6 @@
 # Data Buddy - Store, retrieve and cache data
 
-[![npm version](https://badge.fury.io/js/data-buddy.svg)](https://badge.fury.io/js/data-buddy)
+[![npm version](https://img.shields.io/npm/v/data-buddy?color=green)](https://www.npmjs.com/package/data-buddy)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Simple package to help you store and retrieve data from a JSON file in a simple way. It also allows you to cache data.
